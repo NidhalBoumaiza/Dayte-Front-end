@@ -91,7 +91,9 @@ class ItsADateScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed('/availability');
+                    Get.toNamed('/availability',  arguments: {
+                      "id": arguments['id'],
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0, top: 30),

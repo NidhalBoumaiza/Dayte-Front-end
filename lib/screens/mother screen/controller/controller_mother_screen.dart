@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Widget/snackBar.dart';
+import '../../../models/Dayte.dart';
 import '../../../models/matches.dart';
 import '../../../models/myProfile_model.dart';
 import '../../../models/profiles_model.dart';
@@ -16,10 +17,9 @@ class MotherScreenController extends GetxController {
   RxList<Suggestions> listSuggestions = <Suggestions>[].obs;
   late User myProfile;
   RxList<Matches> listMatches = <Matches>[].obs;
-
+  RxList<Matche> listDaytes = <Matche>[].obs;
   Future getHomeSuggestions() async {
     isLoading.value = true;
-    print(isLoading.value);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('access_token');
     var res = await http.get(
@@ -29,36 +29,35 @@ class MotherScreenController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-    print(res.statusCode);
     if (res.statusCode == 200) {
       isLoading.value = false;
       // Simulate fetching data from the API
       Map<String, dynamic> jsonData = json.decode(res.body);
-      print(jsonData["user"]);
       // Parse the JSON data and populate the events list
       if (jsonData['suggestions'] != null) {
-        print(jsonData['suggestions']);
         listSuggestions.value = List<Suggestions>.from(
           jsonData['suggestions'].map((x) => Suggestions.fromJson(x)),
         );
         if (jsonData["user"] != null) {
           this.myProfile = User.fromJson(jsonData["user"]);
         }
+        print('ddddddddddddddddddddddddddddddddddd') ;
+        print (jsonData["matches"]) ;
         if (jsonData["matches"] != null) {
           listMatches.value = List<Matches>.from(
             jsonData['matches'].map((x) => Matches.fromJson(x)),
           );
+          print (jsonData["matches"]) ;
         }
 
         if (listMatches.isNotEmpty) {
           Get.toNamed("/itsadate", arguments: {
             "picture": listMatches[0].profilePicture,
             "myPicture": myProfile.pictures?[0],
+            "id": listMatches[0].id,
           });
         }
 
-        print("èèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèè");
-        print(listMatches.length);
         return 0;
       }
     } else {
@@ -103,8 +102,10 @@ class MotherScreenController extends GetxController {
       snackbar(context, 3, "7chinah", Colors.green);
     } else if (res.statusCode == 200 && resBody["message"] == "match") {
       listSuggestions[index].liked?.value = true;
+      print (resBody);
       Get.toNamed("/itsadate", arguments: {
-        "picture": resBody["pictures"],
+        "picture": resBody["picture"],
+        "id" : resBody["id"],
         "myPicture": myProfile.pictures?[0],
       });
     } else {}
@@ -126,4 +127,25 @@ class MotherScreenController extends GetxController {
 // }
 
 
+  Future getDaytes () async {
+    isLoading.value = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('access_token');
+    var res = await http.get(
+      Uri.parse("${dotenv.env['URL']}/base/get-all-user-matches/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    var jsonData = json.decode(res.body);
+
+    print (jsonData['matches']) ;
+    if (jsonData['matches'] != null) {
+      listDaytes.value = List<Matche>.from(
+        jsonData['matches'].map((x) => Matche.fromJson(x)),
+      );
+    }
+    return 0 ;
+}
 }

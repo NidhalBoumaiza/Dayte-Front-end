@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+//import 'package:flutter_stripe/flutter_stripe.dart';
 
 class CardFormScreen extends StatelessWidget {
   const CardFormScreen({
@@ -18,9 +18,9 @@ class CardFormScreen extends StatelessWidget {
             children: [
               Text("Card Form"),
               SizedBox(height: 20),
-              CardFormField(
-                controller: CardFormEditController(),
-              )
+              // CardFormField(
+              //   controller: CardFormEditController(),
+              // )
             ],
           ),
         ));

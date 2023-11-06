@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dayte/Widget/button_next.dart';
 import 'package:dayte/Widget/checkbox_widget.dart';
 import 'package:dayte/Widget/snackBar.dart';
@@ -5,9 +7,12 @@ import 'package:dayte/Widget/text_widget.dart';
 import 'package:dayte/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import '../../main.dart';
 import 'controller/availlability_screen_controller.dart';
 
 class AvailabilityScreen extends StatefulWidget {
@@ -102,6 +107,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var arguments = Get.arguments;
     return SafeArea(
         child: Stack(
       children: [
@@ -158,8 +164,10 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
+
                                   availabilityScreenController.addDay(
-                                      'Monday', timeToAdd);
+                                      'Monday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -190,8 +198,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
                                   availabilityScreenController.addDay(
-                                      'Tuesday', timeToAdd);
+                                      'Tuesday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -223,8 +232,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
                                   availabilityScreenController.addDay(
-                                      "Wednesday", timeToAdd);
+                                      "Wednesday", formattedTime);
                                 });
                                 Get.back();
                               },
@@ -256,8 +266,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
                                   availabilityScreenController.addDay(
-                                      'Thursday', timeToAdd);
+                                      'Thursday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -287,8 +298,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
                                   availabilityScreenController.addDay(
-                                      'Friday', timeToAdd);
+                                      'Friday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -320,8 +332,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
                                   availabilityScreenController.addDay(
-                                      'Saturday', timeToAdd);
+                                      'Saturday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -343,7 +356,8 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                               () async {
                                 setState(() {
                                   d7 = !d7;
-                                  DateTime date = findFirstDayInMonth('Sunday');
+                                   DateTime date = findFirstDayInMonth('Sunday');
+
                                   timeToAdd = DateTime(
                                       date.year,
                                       date.month,
@@ -351,8 +365,10 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                                       time.hour,
                                       time.minute,
                                       time.second);
+                                  String formattedTime = DateFormat.Hm().format(timeToAdd);
+
                                   availabilityScreenController.addDay(
-                                      'Sunday', timeToAdd);
+                                      'Sunday', formattedTime);
                                 });
                                 Get.back();
                               },
@@ -375,8 +391,26 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                             "You have to select at least a day for the date",
                             Colors.redAccent);
                       } else {
-                        snackbar(context, 1, "Your date is programmed",
-                            Colors.green);
+                        var body = {
+                          "match_id" : arguments["id"]  ,
+                          "days_times" : availabilityScreenController.myMap ,
+                        };
+                        var  data = jsonEncode(body);
+                        var res =await  http.post(
+                          Uri.parse("${dotenv.env['URL']}/base/set-dayte-day/") ,
+                          headers: <String, String>{
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            "Authorization": "Bearer $token",
+                          },
+                          body: data,
+                        );
+                        final resBody = json.decode(res.body);
+                        if (res.statusCode == 200){
+                          Get.toNamed('/motherscreen') ;
+                          snackbar(context, 3, resBody["message"],
+                              Colors.green);
+                        }
+
                       }
 
                       print(availabilityScreenController.myMap);

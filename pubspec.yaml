@@ -39,8 +39,8 @@ dependencies:
   image_cropper_platform_interface: ^4.0.0
   image_cropper: ^4.0.1
   flutter_dotenv: ^5.1.0
-  flutter_plugin_android_lifecycle: ^2.0.17
-  flutter_stripe: ^9.5.0+1
+#  flutter_plugin_android_lifecycle: ^2.0.17
+#  flutter_stripe: ^9.5.0+1
 
 
 flutter_native_splash:

@@ -8,7 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class DayteCard extends StatelessWidget {
   void Function() onPress;
   String image;
-  DayteCard({Key? key, required this.image, required this.onPress})
+  String date , time ;
+  DayteCard({Key? key, required this.image, required this.onPress ,required this.date  ,required this.time})
       : super(key: key);
 
   @override
@@ -79,9 +80,9 @@ class DayteCard extends StatelessWidget {
                         "Time", AppColor.red, 14.0, FontWeight.w800, 0.0),
                     const SizedBox(height: 10),
                     TextWidget(
-                        "12:30 PM", AppColor.black, 13.0, FontWeight.w900, 0.0),
+                        time, AppColor.black, 13.0, FontWeight.w900, 0.0),
                     const SizedBox(height: 7),
-                    TextWidget("07/08/2023", AppColor.black, 13.0,
+                    TextWidget(date, AppColor.black, 13.0,
                         FontWeight.w400, 0.0),
                     SizedBox(height: 35),
                     Center(

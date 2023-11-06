@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 
 class AvailabilityScreenController extends GetxController {
-  RxMap<String, DateTime> myMap = <String, DateTime>{}.obs;
+  RxMap<String, String> myMap = <String, String>{}.obs;
 
-  void addDay(String dayName, DateTime date) {
+  void addDay(String dayName, String date) {
     myMap[dayName] = date;
     print(myMap);
   }
