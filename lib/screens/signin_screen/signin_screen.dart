@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -23,11 +24,13 @@ class SignInScreen extends StatefulWidget {
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
+
 class _SignInScreenState extends State<SignInScreen> {
+
   facebookLogin() async {
     try {
-      final result =
-          await FacebookAuth.i.login(permissions: ['public_profile', 'email']);
+      final LoginResult result = await FacebookAuth.instance.login(); // by default we request the email and the public profile
+
       if (result.status == LoginStatus.success) {
         final userData = await FacebookAuth.i.getUserData();
         print(userData);
@@ -92,12 +95,11 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _checking = true;
   String? accessTokenGoogle;
 
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId:
-        "186651681146-8b81liqfqkvch8vigcm4srjocv0a2rb6.apps.googleusercontent.com",
-    //scopes: ['email'],
-  );
+final GoogleSignIn _googleSignIn = GoogleSignIn(
+  clientId: "186651681146-jt0f27mjspuurmrpm2mdc2ipimsfoq2f.apps.googleusercontent.com",
+);
   bool isLoading = false;
+
 
   _handleSignIn() async {
     try {
@@ -107,37 +109,39 @@ class _SignInScreenState extends State<SignInScreen> {
 
       account = await _googleSignIn.signIn();
       print("33333333333333333333333333333333333333333333333");
-
       GoogleSignInAuthentication authentication = await account!.authentication;
       print("44444444444444444444444444444444444444444444444");
 
       if (account != null) {
+
         accessTokenGoogle = authentication.accessToken;
         var body = jsonEncode({
           "token": accessTokenGoogle,
           "backend": "google-oauth2",
           "grant_type": "convert_token",
-          "client_id": clientId,
-          "client_secret": clientSecret
+          //change the client_id / client_secret !!!!!!!! 🍑🍑🍑🍑🍑🍑
+          "client_id": 'qMer5V9S5EpJSHM9vPRzNOuuIE3o6dgeS4zrfHun',
+          "client_secret": 'hpvsXP5nIvcOLni0Q6htIBPU1u393uQ9hXyTv9Z0TBcwaZUapG317B9OZslwepFaAF9ro5ys73cmhzQkgBvpd19C8LU48L95nbmLFWXnzgh1asP7hSltqLDyzC4SC0EH'
         });
-        print(",fxku;cv;jfvbil:kbmo:");
         print(accessTokenGoogle);
         setState(() {
           isLoading = true;
         });
+        print(URL);
+        //change the url nidhal !!!! 💀💀💀💀💀💀💀💀💀💀
         var res = await http.post(
-          Uri.parse("$URL/authentication/convert-token/"),
+          Uri.parse("http://192.168.1.16:8000/auth/convert-token/"),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: body,
         );
-        print("sdfgjk:qsbegslqergnqermhlsnetrbhehqssrjtkh");
         print(res.body);
         var decodedBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
           //token = decodedBody["access_token"];
           print(decodedBody);
+
           var response = await http.post(
             Uri.parse("$URL/auth/profile_exist/"),
             headers: {
@@ -232,9 +236,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
                         /// TODO GOOGLE SIGNIN FUNCTION
                         () {
-                      print("11111111111111111111111111111111");
-                      //_handleSignIn();
-                      Get.toNamed("/stripe");
+//                       print("11111111111111111111111111111111");
+//                       //_handleSignIn();
+//                       Get.toNamed("/stripe");
+_handleSignIn();
                     }, AppColor.red, FontAwesomeIcons.google,
                         "Continue with Google"),
                     const SizedBox(height: 35),

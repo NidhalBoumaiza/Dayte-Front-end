@@ -6,7 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <queries>
+    <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
+    </queries>
     <application
         android:label="dayte"
         android:name="${applicationName}"
@@ -29,6 +31,8 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+
+
             <!--            <meta-data-->
             <!--                android:name="io.flutter.embedding.android.SplashScreenDrawable"-->
             <!--                android:resource="@drawable/background"-->
@@ -47,5 +51,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="297655833175218"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="fd71f8544d96ef2c14f605bed3cbf1bc"/>
     </application>
 </manifest>
