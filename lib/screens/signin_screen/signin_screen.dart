@@ -113,8 +113,8 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
       print("44444444444444444444444444444444444444444444444");
 
       if (account != null) {
-
         accessTokenGoogle = authentication.accessToken;
+        print(accessTokenGoogle);
         var body = jsonEncode({
           "token": accessTokenGoogle,
           "backend": "google-oauth2",
@@ -123,46 +123,48 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
           "client_id": 'qMer5V9S5EpJSHM9vPRzNOuuIE3o6dgeS4zrfHun',
           "client_secret": 'hpvsXP5nIvcOLni0Q6htIBPU1u393uQ9hXyTv9Z0TBcwaZUapG317B9OZslwepFaAF9ro5ys73cmhzQkgBvpd19C8LU48L95nbmLFWXnzgh1asP7hSltqLDyzC4SC0EH'
         });
-        print(accessTokenGoogle);
         setState(() {
           isLoading = true;
         });
-        print(URL);
+
         //change the url nidhal !!!! 💀💀💀💀💀💀💀💀💀💀
-        var res = await http.post(
-          Uri.parse("http://192.168.1.16:8000/auth/convert-token/"),
+        var response = await http.post(
+          Uri.parse("http://192.168.1.100:8000/auth/convert-token/"),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: body,
         );
-        print(res.body);
-        var decodedBody = jsonDecode(res.body);
-        if (res.statusCode == 200) {
-          //token = decodedBody["access_token"];
-          print(decodedBody);
+        var decodedBody = jsonDecode(response.body);
+        print (decodedBody) ;
+        if (response.statusCode == 200) {
+          saveData("access_token", decodedBody["access_token"]);
+          saveData("refresh_token", decodedBody["refresh_token"]);
 
-          var response = await http.post(
-            Uri.parse("$URL/auth/profile_exist/"),
+          var res2 = await http.get(
+            Uri.parse(
+                "${dotenv.env['URL']}/base/home/"),
             headers: {
-              'Authorization': 'Bearer ${decodedBody["access_token"]}',
+              'Content-Type':
+              'application/json; charset=UTF-8',
+              'Authorization':
+              'Bearer ${decodedBody["access_token"]}'
             },
           );
-          print(response.body);
-          print(response.statusCode);
+          var response2 = jsonDecode(res2.body);
 
-          if (response.statusCode == 200) {
-            saveData("AccessToken", decodedBody["access_token"]);
-            saveData("RefreshToken", decodedBody["refresh_token"]);
-            Get.offAllNamed('/signinstepthree');
-          } else {
-            Get.offAllNamed(
-              '/SignUpStepOneGoogle',
-              arguments: {
-                "access_token": decodedBody["access_token"],
-                "refresh_token": decodedBody["refresh_token"],
-              },
+          if (res2.statusCode == 200) {
+            snackbar(context, 2, "Welcome to Dayte",
+                Colors.green);
+            Get.toNamed(
+              '/location',
+              arguments: {"api": false},
             );
+
+          } else {
+            snackbar(context, 2, response2["message"],
+                Colors.green);
+            Get.offAllNamed('/accountstepone');
           }
         } else {
           setState(() {
@@ -173,7 +175,7 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
         }
       }
     } catch (error) {
-      print("tnakettttttttttttttttttttttttttttttttttt");
+      print("ERRRRRROOOOOOR");
       print(error);
     }
   }
@@ -239,7 +241,7 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
 //                       print("11111111111111111111111111111111");
 //                       //_handleSignIn();
 //                       Get.toNamed("/stripe");
-_handleSignIn();
+                        _handleSignIn();
                     }, AppColor.red, FontAwesomeIcons.google,
                         "Continue with Google"),
                     const SizedBox(height: 35),

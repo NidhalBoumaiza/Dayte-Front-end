@@ -229,7 +229,7 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                                   } else if (res2.statusCode == 400) {
                                     snackbar(context, 2, response2["message"],
                                         Colors.green);
-                                    Get.offAllNamed('accountstepone');
+                                    Get.offAllNamed('/accountstepone');
                                   }
                                 } else {
                                   setState(() {

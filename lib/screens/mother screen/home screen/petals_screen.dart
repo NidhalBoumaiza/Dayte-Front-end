@@ -68,6 +68,7 @@ class _PetalsScreenState extends State<PetalsScreen> {
                       itemBuilder: (BuildContext context, int index) {
                         // Build each grid item
                         // TODO LATER WITH API ShimmerLoadingPetals()
+                        print(controllerHome.listSuggestions[index].id);
                         if (controllerHome.isLoading.value == true) {
                           return ShimmerLoadingPetals();
                         } else {
